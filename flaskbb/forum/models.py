@@ -436,6 +436,8 @@ class Topic(HideableCRUDMixin, db.Model):
                             cascade="all, delete-orphan",
                             post_update=True)
 
+    img_name = db.Column(db.String(100), default= "paper_default.png", nullable= True)
+
     @property
     def second_last_post(self):
         """Returns the second last post or None."""
@@ -454,7 +456,7 @@ class Topic(HideableCRUDMixin, db.Model):
         """Returns the slugified url for the topic."""
         return url_for("forum.view_topic", topic_id=self.id, slug=self.slug)
 
-    def __init__(self, title=None, user=None, content=None):
+    def __init__(self, title=None, user=None, content=None, img_name=None):
         """Creates a topic object with some initial values.
 
         :param title: The title of the topic.
@@ -472,6 +474,9 @@ class Topic(HideableCRUDMixin, db.Model):
 
         if content:
             self._post = Post(content=content)
+
+        if img_name:
+            self.img_name = img_name
 
         self.date_created = self.last_updated = time_utcnow()
 

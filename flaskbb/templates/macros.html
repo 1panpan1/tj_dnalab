@@ -475,3 +475,12 @@ For example, on id should continue with 11 on page 2 if per_page is set to 10
         {{ page + (obj.page - 1) * per_page }}
     {%- endif -%}
 {%- endmacro -%}
+
+{%- macro render_upload_field(field, input_style) -%}
+<div style='{{ input_style }}'>
+    <label>{{ field.label.text }}</label>
+    {{ field(**kwargs) }}
+    {{ field_description(field) }}
+    {{ field_errors(field) }}
+</div>
+{%- endmacro -%}

@@ -9,17 +9,20 @@
     :license: BSD, see LICENSE for more details.
 """
 import logging
+import os
 
 from flask import current_app
 from flask_babelplus import lazy_gettext as _
 from flask_wtf import FlaskForm
+from flask_wtf.file import FileField, FileRequired, FileAllowed
 from wtforms import (BooleanField, SelectMultipleField, StringField,
                      SubmitField, TextAreaField)
 from wtforms.validators import DataRequired, Length, Optional
 
 from flaskbb.forum.models import Forum, Post, Report, Topic
 from flaskbb.user.models import User
-from flaskbb.utils.helpers import time_utcnow
+from flaskbb.utils.helpers import time_utcnow, get_md5
+from werkzeug import secure_filename
 
 logger = logging.getLogger(__name__)
 
@@ -73,6 +76,7 @@ class ReplyForm(PostForm):
 
 
 class TopicForm(FlaskForm):
+
     title = StringField(
         _("Topic title"),
         validators=[
@@ -91,10 +95,21 @@ class TopicForm(FlaskForm):
         _("Track this topic"), default=False, validators=[Optional()]
     )
 
+    img_name = FileField(_('选择封面图'), validators=[
+            FileRequired('Choose a coverage for the topic.'),
+            FileAllowed(['jpg', 'png'], 'You can only upload images ending with jpg or png.')
+        ])
+
     submit = SubmitField(_("Post topic"))
 
     def save(self, user, forum):
-        topic = Topic(title=self.title.data, content=self.content.data)
+        image_name = secure_filename(self.img_name.data.filename)
+        image_name = "{}_{}".format(get_md5(self.content.data), image_name)
+
+        topic = Topic(title=self.title.data, content=self.content.data, img_name=image_name)
+        # topic = Topic(title=self.title.data, content=self.content.data)
+
+        self.img_name.data.save(os.path.join(current_app.config["UPLOAD_COVERAGE_SAVE_DIR"], image_name))
 
         if self.track_topic.data:
             user.track_topic(topic)
@@ -125,6 +140,12 @@ class EditTopicForm(TopicForm):
         """
         for obj in objs:
             super(EditTopicForm, self).populate_obj(obj)
+        
+        # update image
+        image_name = secure_filename(self.img_name.data.filename)
+        image_name = "{}_{}".format(get_md5(self.content.data), image_name)
+        self.topic.img_name = image_name
+        self.img_name.data.save(os.path.join(current_app.config["UPLOAD_COVERAGE_SAVE_DIR"], image_name))
 
     def save(self, user, forum):
         if self.track_topic.data:

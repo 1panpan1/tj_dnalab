@@ -6,6 +6,5 @@ Click the link below to activate your account:
 
 {{ link }}
 
-Sincerely,
-The Administration
+Tongji DNAlab
 {% endtrans %}

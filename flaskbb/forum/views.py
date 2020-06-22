@@ -46,7 +46,6 @@ impl = HookimplMarker("flaskbb")
 
 logger = logging.getLogger(__name__)
 
-
 class ForumIndex(MethodView):
 
     def get(self):
@@ -315,7 +314,7 @@ class EditTopic(MethodView):
     def post(self, topic_id, slug=None):
         topic = Topic.query.filter_by(id=topic_id).first_or_404()
         post = topic.first_post
-        form = self.form(obj=post, title=topic.title)
+        form = self.focrm(obj=post, title=topic.title)
 
         if form.validate_on_submit():
             form.populate_obj(topic, post)

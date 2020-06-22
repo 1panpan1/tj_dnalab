@@ -16,6 +16,7 @@ import os
 import re
 import time
 import warnings
+import hashlib
 from datetime import datetime, timedelta
 from email import message_from_string
 from functools import wraps
@@ -844,3 +845,12 @@ class FlashAndRedirect(object):
     def __call__(self, *a, **k):
         flash(self._message, self._level)
         return redirect(self._endpoint(*a, **k))
+
+def get_md5(string):
+    if type(string) != str:
+        raise ValueError("Parameter should be a str but got {}".format(type(string)))
+
+    # initialize md5 object every time
+    md5 = hashlib.md5()
+    md5.update(string.encode('utf-8'))
+    return md5.hexdigest()

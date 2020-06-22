@@ -28,7 +28,7 @@ fixture = (
                 (
                     "project_title",
                     {
-                        "value": "FlaskBB",
+                        "value": "Tongji DNAlab",
                         "value_type": SettingValueType.string,
                         "name": "Project title",
                         "description": "The title of the project.",
@@ -37,7 +37,7 @@ fixture = (
                 (
                     "project_subtitle",
                     {
-                        "value": "A lightweight forum software in Flask",
+                        "value": "Share and offer knowledge.",
                         "value_type": SettingValueType.string,
                         "name": "Project subtitle",
                         "description": "A short description of the project.",
@@ -328,7 +328,7 @@ fixture = (
                 (
                     "default_language",
                     {
-                        "value": "en",
+                        "value": "zh_CN",
                         "value_type": SettingValueType.select,
                         "extra": {"choices": available_languages},
                         "name": "Default Language",
